@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('login', [LoginController::class, 'authenticate']);
 
+// REST endpoints with shallow-nesting for reservations
 Route::apiResource('flights.flight-reservations', FlightReservationController::class)
     ->only(['store', 'destroy'])
     ->parameters(['flight-reservations' => 'reservation'])
     ->shallow()
-
     ->middleware('auth:sanctum');
