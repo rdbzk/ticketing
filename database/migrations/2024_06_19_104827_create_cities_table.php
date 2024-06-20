@@ -16,7 +16,6 @@ return new class extends Migration
 
             // Index the name when searching a city
             $table->index('name');
-            $table->unique('country_code');
         });
     }
 
