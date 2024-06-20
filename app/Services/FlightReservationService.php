@@ -7,7 +7,6 @@ use App\Enums\SeatSection;
 use App\Exceptions\FlightReservationException;
 use App\Models\Flight;
 use App\Models\FlightReservation;
-use App\ValueObjects\Seat;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
