@@ -7,60 +7,76 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+# Setup instructions
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+1. Copy the provided `.env` file to the root of the project
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+2. Create an SQLite database file in the `database` directory
+```bash
+touch database/database.sqlite
+```
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+3. Installer Composer dependencies
+```bash
+composer install
+```
 
-## Learning Laravel
+4. Run database migrations with seeding
+```bash
+php artisan migrate:fresh --seed
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+5. Start the localhost server
+```bash
+php artisan serve
+```
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+# Running the application
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+This project uses Laravel Sanctum for authentication. **You should first authenticate to the API in order to get an API token**.
 
-## Laravel Sponsors
+Assuming that `http://127.0.0.1:8000` is your localhost domain, on Postman, run a **POST** request to this endpoint:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+```bash
+http://127.0.0.1:8000/api/login
+```
 
-### Premium Partners
+Which will give you an access token:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+```json
+{
+    "access_token": "1|FvX45hbA5WKsMdlpOIS4FWsloztkWfCnglJvd2eE9ec47727"
+}
+```
 
-## Contributing
+Copy this value and use it as a Bearer token in the `Authorization` header of your requests:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```
+Accept: application/json
+Authorization: Bearer {access_token}
+```
 
-## Code of Conduct
+## Available endpoints
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The API uses a RESTful architecture and has the following endpoints:
 
-## Security Vulnerabilities
+### Create a flight reservation
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+**POST** http://127.0.0.1:8000/api/flights/{flight_id}/flight-reservations
 
-## License
+The `flight_id` is the ID of the flight you want to reserve, that you can pick from the `flights` table: `1` or `2`.
+You should send a JSON payload with the following structure:
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```json
+// Any string between 7 and 9 characters
+{
+    "passenger_passport_id": "A291837189"
+}
+```
+
+### Delete a flight reservation
+
+**DELETE** http://127.0.0.1:8000/api/flight-reservations/{flight_reservation_id}
+
+The `flight_reservation_id` is the ID of the reservation you want to delete, that you can pick from the response after
+creating a flight reservation.
